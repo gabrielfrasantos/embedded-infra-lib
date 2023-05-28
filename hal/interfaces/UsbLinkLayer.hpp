@@ -61,7 +61,6 @@ namespace hal
     class UsbDeviceLinkLayer;
     class UsbHostLinkLayer;
 
-    template <class T>
     class UsbDeviceFactory
     {
     public:
@@ -69,11 +68,25 @@ namespace hal
         UsbDeviceFactory(const UsbDeviceFactory& other) = delete;
         UsbDeviceFactory& operator=(const UsbDeviceFactory& other) = delete;
 
-        virtual void Create(T& linkLayer) = 0;
+        virtual void Create(UsbDeviceLinkLayer& linkLayer) = 0;
         virtual void Destroy() = 0;
 
     protected:
         ~UsbDeviceFactory() = default;
+    };
+
+    class UsbHostFactory
+    {
+    public:
+        UsbHostFactory() = default;
+        UsbHostFactory(const UsbHostFactory& other) = delete;
+        UsbHostFactory& operator=(const UsbHostFactory& other) = delete;
+
+        virtual void Create(UsbHostLinkLayer& linkLayer) = 0;
+        virtual void Destroy() = 0;
+
+    protected:
+        ~UsbHostFactory() = default;
     };
 
     class UsbDeviceLinkLayerObserver
@@ -142,7 +155,7 @@ namespace hal
     };
 
     class UsbHostLinkLayer
-        : public infra::Subject<UsbHostLinkLayer>
+        : public infra::Subject<UsbHostLinkLayerObserver>
     {
     public:
         UsbHostLinkLayer() = default;
