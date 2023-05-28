@@ -34,6 +34,9 @@ target_sources(hal.interfaces PRIVATE
     I2cRegisterAccess.hpp
     MacAddress.cpp
     MacAddress.hpp
+    Pwm.hpp
+    PwmInput.hpp
+    QuadratureEncoder.hpp
     QuadSpi.cpp
     QuadSpi.hpp
     RandomDataGenerator.hpp

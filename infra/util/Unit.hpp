@@ -423,6 +423,10 @@ namespace infra
     typedef Second::Scale<StaticRational<1, 1000>> MilliSecond;
     typedef MilliSecond::Scale<StaticRational<1, 1000>> MicroSecond;
 
+    typedef Second::Inverse Hertz;
+    typedef Hertz::Scale<StaticRational<1, 1000>> KiloHertz;
+    typedef KiloHertz::Scale<StaticRational<1, 1000>> MegaHertz;
+
     typedef Second::Div<Meter>::Inverse MeterPerSecond;
 
     typedef BaseUnit<3> Ohm;
@@ -438,6 +442,10 @@ namespace infra
     typedef Joule::Scale<StaticRational<3600, 1000>> KiloWattHour;
 
     typedef BaseUnit<4> Celsius;
+
+    typedef BaseUnit<5>::Scale<StaticRational<0, 100>> Percent;
+
+    typedef Second::Inverse PulsesPerSecond;
 }
 
 #endif
