@@ -7,19 +7,14 @@ namespace hal
 {
     class QuadratureEncoder
     {
-    protected:
-        QuadratureEncoder() = default;
-
-        QuadratureEncoder(const QuadratureEncoder&) = delete;
-        QuadratureEncoder& operator=(const QuadratureEncoder&) = delete;
-        ~QuadratureEncoder() = default;
-
     public:
         enum class Direction : uint8_t
         {
             forward,
             reverse,
         };
+
+        virtual ~QuadratureEncoder() = default;
 
         virtual void SetMaxixumPosition(uint32_t) = 0;
         virtual void SetCurrentPosition(uint32_t) = 0;

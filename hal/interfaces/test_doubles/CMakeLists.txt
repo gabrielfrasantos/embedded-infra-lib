@@ -25,6 +25,9 @@ target_sources(hal.interfaces_test_doubles PRIVATE
     I2cMock.hpp
     I2cRegisterAccessMock.cpp
     I2cRegisterAccessMock.hpp
+    PwmInputMock.hpp
+    PwmMock.hpp
+    QuadratureEncoderMock.hpp
     QuadSpiStub.cpp
     QuadSpiStub.hpp
     RandomDataGeneratorMock.hpp
