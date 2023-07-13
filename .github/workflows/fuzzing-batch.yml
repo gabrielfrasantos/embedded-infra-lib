@@ -29,4 +29,4 @@ jobs:
           fuzz-seconds: 1800
           mode: batch
           sanitizer: ${{ matrix.sanitizer }}
-          storage-repo: https://${{ secrets.METRICS_TOKEN }}@github.com/philips-software/amp-embedded-infra-lib-metrics.git
+          #storage-repo: https://${{ secrets.METRICS_TOKEN }}@github.com/philips-software/amp-embedded-infra-lib-metrics.git
