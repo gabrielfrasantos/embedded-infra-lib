@@ -20,6 +20,8 @@ target_sources(hal.interfaces PRIVATE
     CommunicationConfigurator.hpp
     Dac.hpp
     DigitalToAnalogPin.hpp
+    DisplayLcd.cpp
+    DisplayLcd.hpp
     Ethernet.hpp
     Flash.cpp
     Flash.hpp
