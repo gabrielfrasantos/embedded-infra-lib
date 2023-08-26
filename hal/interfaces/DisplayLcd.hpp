@@ -46,19 +46,18 @@ namespace hal
         uint32_t color;
     };
 
+    struct Image
+    {
+        uint16_t bitsPerPixel;
+        uint8_t subPixelOffset;
+        std::size_t numberOfPixels;
+        infra::MemoryRange<uint8_t> palette;
+        infra::MemoryRange<uint8_t> image;
+    };
+
     class DisplayLcd
     {
     public:
-        struct Image
-        {
-            std::size_t width;
-            std::size_t height;
-            uint16_t bitsPerPixel;
-            std::size_t size;
-
-            infra::MemoryRange<uint8_t> image;
-        };
-
         struct Point
         {
             std::size_t x;
