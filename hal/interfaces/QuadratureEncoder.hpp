@@ -1,6 +1,7 @@
 #ifndef HAL_QUADRATURE_ENCODER_HPP
 #define HAL_QUADRATURE_ENCODER_HPP
 
+#include "infra/util/Function.hpp"
 #include "infra/util/Unit.hpp"
 
 namespace hal
@@ -8,7 +9,7 @@ namespace hal
     class QuadratureEncoder
     {
     public:
-        enum class Direction : uint8_t
+        enum class MotionDirection : uint8_t
         {
             forward,
             reverse,
@@ -16,11 +17,16 @@ namespace hal
 
         virtual ~QuadratureEncoder() = default;
 
-        virtual void SetMaxixumPosition(uint32_t) = 0;
-        virtual void SetCurrentPosition(uint32_t) = 0;
-        virtual uint32_t GetPosition() = 0;
-        virtual Direction GetDirection() = 0;
-        virtual infra::PulsesPerSecond GetSpeed() = 0;
+        virtual void Position(uint32_t position) = 0;
+        virtual void Resolution(uint32_t resolution) = 0;
+
+        virtual uint32_t Position() = 0;
+        virtual uint32_t Resolution() = 0;
+
+        virtual MotionDirection Direction() = 0;
+        virtual void Direction(const infra::Function<void(MotionDirection)>& onDirectionChange) = 0;
+
+        virtual uint32_t Speed() = 0;
     };
 }
 
