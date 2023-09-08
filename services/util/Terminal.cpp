@@ -22,6 +22,11 @@ namespace services
         tracer.Continue() << message;
     }
 
+    services::Tracer& Terminal::Tracer()
+    {
+        return tracer;
+    }
+
     void Terminal::HandleInput()
     {
         while (!queue.Empty())
@@ -296,5 +301,59 @@ namespace services
 
         if (!commandProcessed)
             Print("Unrecognized command.");
+    }
+
+    TerminalWithMenu::TerminalWithMenu(hal::SerialCommunication& communication, services::Tracer& tracer)
+        : services::Terminal(communication, tracer)
+    {}
+
+    void TerminalWithMenu::AddMenu(TerminalCommandsAndMenu::MenuInfo& menu)
+    {
+        items.push_back(menu);
+    }
+
+    void TerminalWithMenu::Menu()
+    {
+        Tracer().Trace() << "Menu:";
+
+        for(auto& item : items)
+        {
+            Tracer().Trace() << "\t" << item.name << " : " << item.description;
+
+            for (auto& command : item.terminalCommands.Commands())
+               Tracer().Trace() << "\t\t" << command.info.longName << " : " << command.info.shortName << " : " << command.info.description;
+        }
+    }
+
+    bool TerminalWithMenu::ProcessMenu(infra::BoundedConstString data)
+    {
+        infra::Tokenizer tokenizer(data, ' ');
+        infra::BoundedConstString menu = tokenizer.Token(0);
+        infra::BoundedConstString params = tokenizer.TokenAndRest(1);
+
+        if (menu == "?")
+        {
+            Menu();
+            return true;
+        }
+
+        auto it = std::find_if(items.begin(), items.end(), [&menu](const TerminalCommandsAndMenu::MenuInfo& entry)
+            {
+                return menu == entry.name;
+            });
+
+        if (it != items.end())
+        {
+            it->terminalCommands.ProcessCommand(params);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    void TerminalWithMenu::OnData(infra::BoundedConstString data)
+    {
+        if (!ProcessMenu(data))
+            Print("Unrecognized menu option.");
     }
 }

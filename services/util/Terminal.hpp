@@ -6,6 +6,7 @@
 #include "infra/util/BoundedDeque.hpp"
 #include "infra/util/BoundedString.hpp"
 #include "infra/util/Observer.hpp"
+#include "infra/util/IntrusiveList.hpp"
 #include "services/tracer/Tracer.hpp"
 
 namespace services
@@ -19,6 +20,9 @@ namespace services
 
         virtual void OnData(infra::BoundedConstString data)
         {}
+
+    protected:
+        services::Tracer& Tracer();
 
     private:
         void HandleInput();
@@ -111,6 +115,46 @@ namespace services
 
     private:
         void OnData(infra::BoundedConstString data) override;
+    };
+
+    class TerminalCommandsAndMenu
+        : public TerminalCommands
+    {
+    public:
+        struct MenuInfo
+            : public infra::IntrusiveList<MenuInfo>::NodeType
+        {
+            MenuInfo(infra::BoundedConstString name, infra::BoundedConstString description, TerminalCommands& terminalCommands)
+                : name(name)
+                , description(description)
+                , terminalCommands(terminalCommands)
+            {}
+
+            infra::BoundedConstString name;
+            infra::BoundedConstString description;
+            TerminalCommands& terminalCommands;
+        };
+
+        TerminalCommandsAndMenu(TerminalWithCommands& terminal)
+            : TerminalCommands(terminal)
+        {}
+        virtual MenuInfo& Menu() = 0;
+    };
+
+    class TerminalWithMenu
+        : public Terminal
+        , public TerminalWithCommands
+    {
+    public:
+        TerminalWithMenu(hal::SerialCommunication& communication, services::Tracer& tracer);
+        void AddMenu(TerminalCommandsAndMenu::MenuInfo& menu);
+
+    private:
+        bool ProcessMenu(infra::BoundedConstString data);
+        void OnData(infra::BoundedConstString data) override;
+        void Menu();
+
+        infra::IntrusiveList<TerminalCommandsAndMenu::MenuInfo> items;
     };
 }
 
