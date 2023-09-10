@@ -148,11 +148,11 @@ namespace services
     public:
         TerminalWithMenu(hal::SerialCommunication& communication, services::Tracer& tracer);
         void AddMenu(TerminalCommandsAndMenu::MenuInfo& menu);
+        void PrintHelp();
 
     private:
         bool ProcessMenu(infra::BoundedConstString data);
         void OnData(infra::BoundedConstString data) override;
-        void Menu();
 
         infra::IntrusiveList<TerminalCommandsAndMenu::MenuInfo> items;
     };

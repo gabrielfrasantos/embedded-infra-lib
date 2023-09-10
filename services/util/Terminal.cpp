@@ -294,7 +294,7 @@ namespace services
 
     void TerminalWithCommandsImpl::OnData(infra::BoundedConstString data)
     {
-        bool commandProcessed = NotifyObservers([data](TerminalCommands& observer)
+        bool commandProcessed = NotifyObservers([this, &data](TerminalCommands& observer)
             {
                 return observer.ProcessCommand(data);
             });
@@ -312,9 +312,10 @@ namespace services
         items.push_back(menu);
     }
 
-    void TerminalWithMenu::Menu()
+    void TerminalWithMenu::PrintHelp()
     {
-        Tracer().Trace() << "Menu:";
+        Tracer().Trace() << "Type 'help' to show the list of commands available";
+        Tracer().Trace() << "help:";
 
         for(auto& item : items)
         {
@@ -333,7 +334,7 @@ namespace services
 
         if (menu == "?")
         {
-            Menu();
+            PrintHelp();
             return true;
         }
 
@@ -343,10 +344,7 @@ namespace services
             });
 
         if (it != items.end())
-        {
-            it->terminalCommands.ProcessCommand(params);
-            return true;
-        }
+            return it->terminalCommands.ProcessCommand(params);
         else
             return false;
     }
@@ -355,5 +353,7 @@ namespace services
     {
         if (!ProcessMenu(data))
             Print("Unrecognized menu option.");
+
+        Tracer().Continue() << "\r\n";
     }
 }
