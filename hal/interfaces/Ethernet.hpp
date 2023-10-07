@@ -52,6 +52,8 @@ namespace hal
         : public infra::Subject<EthernetMacObserver>
     {
     public:
+        virtual void Initialize() = 0;
+
         virtual void SendBuffer(infra::ConstByteRange data, bool last) = 0;
         virtual void RetryAllocation() = 0;
 

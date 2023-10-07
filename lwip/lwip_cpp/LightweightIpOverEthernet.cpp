@@ -13,6 +13,8 @@ namespace services
         : hal::EthernetMacObserver(ethernet)
         , netInterface(netInterface)
     {
+        ethernet.Initialize();
+
         netif_set_link_up(&netInterface);
 
         for (auto group = netif_igmp_data(&netInterface); group != nullptr; group = group->next)
