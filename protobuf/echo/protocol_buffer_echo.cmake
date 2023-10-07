@@ -31,7 +31,7 @@ function(emil_fetch_echo_plugins)
     endif()
 
     FetchContent_Declare(echoplugin
-        URL https://github.com/philips-software/amp-embedded-infra-lib/releases/download/v${emil_version}/emil-${emil_version}-${os_postfix}.zip
+        URL https://github.com/gabrielfrasantos/embedded-infra-lib/releases/download/v${emil_version}/emil-${emil_version}-${os_postfix}.zip
         FIND_PACKAGE_ARGS NAMES emil GLOBAL
     )
     FetchContent_MakeAvailable(echoplugin)
