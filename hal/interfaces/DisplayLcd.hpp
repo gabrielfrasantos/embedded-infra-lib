@@ -4,9 +4,14 @@
 #include <cstdint>
 #include "infra/util/AutoResetFunction.hpp"
 #include "infra/util/BoundedVector.hpp"
+#include "infra/util/MemoryRange.hpp"
 
 namespace hal
 {
+    using Rgb332 = uint8_t;
+    using Rgb565 = uint16_t;
+    using Argb8888 = uint32_t;
+
     class Color
     {
     public:
@@ -64,10 +69,26 @@ namespace hal
             std::size_t y;
         };
 
+        struct Area
+        {
+            std::size_t x1;
+            std::size_t y1;
+            std::size_t x2;
+            std::size_t y2;
+        };
+
         struct Dimension
         {
             std::size_t width;
             std::size_t height;
+        };
+
+        enum class ColorScheme : uint8_t
+        {
+            mono = 1,
+            rgb332 = 8,
+            rgb565 = 16,
+            argb8888 = 32,
         };
 
         enum class Orientation : uint8_t
@@ -82,6 +103,12 @@ namespace hal
 
         virtual std::size_t Width() const = 0;
         virtual std::size_t Height() const = 0;
+        virtual std::size_t PixelSize() const = 0;
+
+        virtual void Flush(const Area& area, infra::MemoryRange<Color> color, const infra::Function<void()>& onDone) = 0;
+        virtual void Flush(const Area& area, infra::MemoryRange<Rgb332> color, const infra::Function<void()>& onDone) = 0;
+        virtual void Flush(const Area& area, infra::MemoryRange<Rgb565> color, const infra::Function<void()>& onDone) = 0;
+        virtual void Flush(const Area& area, infra::MemoryRange<Argb8888> color, const infra::Function<void()>& onDone) = 0;
 
         virtual void DrawPixel(Point point, Color color, const infra::Function<void()>& onDone) = 0;
         virtual void DrawHorizontalLine(Point point, std::size_t length, Color color, const infra::Function<void()>& onDone) = 0;
