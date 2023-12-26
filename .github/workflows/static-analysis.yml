@@ -66,7 +66,7 @@ jobs:
     name: CodeQL
     runs-on: ubuntu-latest
 <<<<<<< HEAD
-    container: gabrielfrasantos/embedded-devcontainer:1.0.0
+    container: gabrielfrasantos/embedded-devcontainer:1.0.0@sha256:e65ddb395be83876f00b0a7a3ef25a5afbfbe59b350fdc2b3bcd6457f3d813a3
 =======
     container: ghcr.io/philips-software/amp-devcontainer:v4.0.2@sha256:2d052e0bcb3840ea45aaa21ea6904f6d84b0e310c97e5690a6d48da522ec384e
 >>>>>>> philips-software-main
