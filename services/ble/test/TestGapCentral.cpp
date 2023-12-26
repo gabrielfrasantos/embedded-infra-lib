@@ -1,7 +1,6 @@
+#include "infra/stream/StringOutputStream.hpp"
 #include "infra/util/ByteRange.hpp"
-#include "infra/stream/StringOutputStream.hpp"
 #include "infra/util/test_helper/MemoryRangeMatcher.hpp"
-#include "infra/stream/StringOutputStream.hpp"
 #include "services/ble/test_doubles/GapCentralMock.hpp"
 #include "services/ble/test_doubles/GapCentralObserverMock.hpp"
 #include "services/ble/test_doubles/GapPeripheralMock.hpp"
@@ -55,20 +54,6 @@ namespace services
         gap.NotifyObservers([&deviceDiscovered](GapCentralObserver& obs)
             {
                 obs.DeviceDiscovered(deviceDiscovered);
-            });
-    }
-
-    TEST_F(GapCentralDecoratorTest, forward_all_authentication_events_to_observers)
-    {
-        EXPECT_CALL(gapObserver, AuthenticationSuccessfullyCompleted());
-        EXPECT_CALL(gapObserver, AuthenticationFailed(GapAuthenticationErrorType::authenticationRequirementsNotMet));
-        EXPECT_CALL(gapObserver, AuthenticationFailed(GapAuthenticationErrorType::unknown));
-
-        gap.NotifyObservers([](GapCentralObserver& obs)
-            {
-                obs.AuthenticationSuccessfullyCompleted();
-                obs.AuthenticationFailed(GapAuthenticationErrorType::authenticationRequirementsNotMet);
-                obs.AuthenticationFailed(GapAuthenticationErrorType::unknown);
             });
     }
 

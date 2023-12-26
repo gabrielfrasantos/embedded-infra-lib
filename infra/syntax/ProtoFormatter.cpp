@@ -3,6 +3,19 @@
 
 namespace infra
 {
+    uint32_t MaxVarIntSize(uint64_t value)
+    {
+        uint32_t result = 1;
+
+        while (value > 127)
+        {
+            value >>= 7;
+            ++result;
+        }
+
+        return result;
+    }
+
     ProtoLengthDelimitedFormatter::ProtoLengthDelimitedFormatter(ProtoFormatter& formatter, uint32_t fieldNumber)
         : formatter(formatter)
     {
@@ -115,6 +128,12 @@ namespace infra
     {
         PutVarInt((fieldNumber << 3) | 2);
         PutBytes(bytes);
+    }
+
+    void ProtoFormatter::PutLengthDelimitedSize(std::size_t size, uint32_t fieldNumber)
+    {
+        PutVarInt((fieldNumber << 3) | 2);
+        PutVarInt(size);
     }
 
     ProtoLengthDelimitedFormatter ProtoFormatter::LengthDelimitedFormatter(uint32_t fieldNumber)
