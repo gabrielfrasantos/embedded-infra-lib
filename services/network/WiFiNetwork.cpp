@@ -68,10 +68,4 @@ namespace services
     {
         return !(*this == other);
     }
-
-    WiFiNetworkScanNetworksResultObserver::Network::Network(infra::BoundedConstString ssid, int32_t signalStrength, const WiFiSecurity& security)
-        : ssid(ssid)
-        , signalStrength(signalStrength)
-        , security(security)
-    {}
 }

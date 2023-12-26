@@ -1,0 +1,1 @@
+FROM gabrielfrasantos/embedded-devcontainer:1.0.0@sha256:e65ddb395be83876f00b0a7a3ef25a5afbfbe59b350fdc2b3bcd6457f3d813a3
