@@ -18,6 +18,7 @@ if (NOT FATFS_CONFIG_FILE_DIRECTORY)
 endif()
 
 target_sources(filesystem.fatfs PRIVATE
+    ${fatfs_SOURCE_DIR}/source/diskio.h
     ${fatfs_SOURCE_DIR}/source/ff.h
     ${fatfs_SOURCE_DIR}/source/ff.c
     ${fatfs_SOURCE_DIR}/source/ffsystem.c
