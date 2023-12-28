@@ -1,13 +1,12 @@
 #ifndef FSAL_INTERFACES_FILE_HPP
 #define FSAL_INTERFACES_FILE_HPP
 
-#include "infra/util/BoundedString.hpp"
-#include "infra/util/EnumCast.hpp"
-#include "infra/util/Function.hpp"
+#include "fsal/interfaces/Object.hpp"
 
 namespace fsal
 {
     class File
+        : public Object
     {
     public:
         enum class Mode : uint8_t
@@ -22,7 +21,7 @@ namespace fsal
         };
 
         explicit File(infra::BoundedConstString name, Mode mode);
-        virtual ~File() = default;
+        ~File() override = default;
 
         virtual void Open(const infra::Function<void()>& onDone) = 0;
         virtual void Close(const infra::Function<void()>& onDone) = 0;
