@@ -1,10 +1,7 @@
 #ifndef FSAL_FATFS_DRIVER_FATFS_HPP
 #define FSAL_FATFS_DRIVER_FATFS_HPP
 
-#include "fsal/interfaces/Directory.hpp"
-#include "infra/util/BoundedString.hpp"
 #include "infra/util/BoundedVector.hpp"
-#include "infra/util/Function.hpp"
 #include "hal/synchronous_interfaces/SynchronousDisk.hpp"
 #include "infra/util/InterfaceConnector.hpp"
 #include "source/ff.h"
@@ -19,21 +16,29 @@ namespace fsal
         : public infra::InterfaceConnector<DriverFatFs>
     {
     public:
-        void RegisterDriver(hal::SynchronousDisk& interface) const;
-        void UnregisterDriver(const hal::SynchronousDisk& interface);
+        void RegisterDriver(hal::SynchronousDisk& interface);
+        void UnregisterDriver(hal::SynchronousDisk& interface);
 
         hal::SynchronousDisk& Interface(uint8_t index);
 
     private:
         struct Driver
         {
+            hal::SynchronousDisk& interface;
+
             explicit Driver(hal::SynchronousDisk& interface)
                 : interface(interface)
             {}
+            ~Driver() = default;
 
-            hal::SynchronousDisk& interface;
+            Driver& operator=(Driver&& other) noexcept
+            {
+                this->interface = other.interface;
+                return *this;
+            }
         };
-        static infra::BoundedVector<Driver>::WithMaxSize<FF_VOLUMES> drivers;
+
+        infra::BoundedVector<Driver>::WithMaxSize<FF_VOLUMES> drivers;
     };
 }
 

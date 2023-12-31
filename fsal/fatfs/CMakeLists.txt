@@ -7,6 +7,8 @@ target_link_libraries(fsal.fatfs PUBLIC
 )
 
 target_sources(fsal.fatfs PRIVATE
+    FileFatFs.cpp
+    FileFatFs.hpp
     DirectoryFatFs.cpp
     DirectoryFatFs.hpp
     DriverFatFs.cpp

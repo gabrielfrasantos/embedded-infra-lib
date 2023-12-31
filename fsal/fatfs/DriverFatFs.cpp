@@ -5,14 +5,17 @@
 
 namespace fsal
 {
-    void DriverFatFs::RegisterDriver(hal::SynchronousDisk& interface) const
+    void DriverFatFs::RegisterDriver(hal::SynchronousDisk& interface)
     {
         drivers.emplace_back(interface);
     }
 
-    void DriverFatFs::UnregisterDriver(const hal::SynchronousDisk& interface)
+    void DriverFatFs::UnregisterDriver(hal::SynchronousDisk& interface)
     {
-        drivers.erase(std::find(drivers.begin(), drivers.end(), interface));
+        drivers.erase(std::find_if(drivers.begin(), drivers.end(), [&interface](const DriverFatFs::Driver& x)
+            {
+                return &interface == &x.interface;
+            }));
     }
 
     hal::SynchronousDisk& DriverFatFs::Interface(uint8_t index)
