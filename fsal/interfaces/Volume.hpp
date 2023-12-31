@@ -11,13 +11,13 @@ namespace fsal
     public:
         virtual ~Volume() = default;
 
-        virtual void Mount(infra::BoundedConstString name, const infra::Function<void()>& onDone) = 0;
-        virtual void Unmount(infra::BoundedConstString name, const infra::Function<void()>& onDone) = 0;
-        virtual void CreateVolume(infra::BoundedConstString oldName, infra::BoundedConstString newName, const infra::Function<void()>& onDone) = 0;
-        virtual void CreatePartition(const infra::Function<void()>& onDone) = 0;
-        virtual void SetLabel(infra::BoundedConstString newDirectory, const infra::Function<void()>& onDone) = 0;
-        virtual void GetLabel(const infra::Function<void(const infra::BoundedConstString&)>& onDone) = 0;
-        virtual void GetFreeSpace(const infra::Function<void(const infra::BoundedConstString&)>& onDone) = 0;
+        virtual void Mount() = 0;
+        virtual void Unmount() = 0;
+        virtual std::size_t FreeSpace() = 0;
+
+        virtual void CreateDirectory(infra::BoundedConstString name) = 0;
+        virtual void ChangeDirectory(infra::BoundedConstString name) = 0;
+        virtual infra::BoundedConstString& GetWorkingDirectory() = 0;
     };
 }
 

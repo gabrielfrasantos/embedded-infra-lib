@@ -2,11 +2,12 @@
 #define FSAL_INTERFACES_FILE_HPP
 
 #include "fsal/interfaces/Object.hpp"
+#include "infra/util/ByteRange.hpp"
 
 namespace fsal
 {
     class File
-        : public Object
+        : public Item
     {
     public:
         enum class Mode : uint8_t
@@ -20,17 +21,16 @@ namespace fsal
             openAppend = 0x30u,
         };
 
-        explicit File(infra::BoundedConstString name, Mode mode);
         ~File() override = default;
 
-        virtual void Open(const infra::Function<void()>& onDone) = 0;
-        virtual void Close(const infra::Function<void()>& onDone) = 0;
-        virtual void Read(const infra::Function<void()>& onDone) = 0;
-        virtual void Write(const infra::Function<void()>& onDone) = 0;
-        virtual void Seek(const infra::Function<void()>& onDone) = 0;
-        virtual void Truncate(const infra::Function<void()>& onDone) = 0;
-        virtual void Flush(const infra::Function<void()>& onDone) = 0;
-        virtual void Size(const infra::Function<void(std::size_t)>& onDone) = 0;
+        virtual void Open(Mode mode) = 0;
+        virtual void Close() = 0;
+        virtual void Read(infra::ByteRange buffer) = 0;
+        virtual void Write(infra::ConstByteRange buffer) = 0;
+        virtual void Seek(uint32_t offset) = 0;
+        virtual void Truncate() = 0;
+        virtual void Flush() = 0;
+        virtual std::size_t Size() = 0;
     };
 
     inline File::Mode operator|(File::Mode lhs, File::Mode rhs)

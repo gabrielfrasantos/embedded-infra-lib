@@ -3,11 +3,10 @@
 
 #include "infra/util/BoundedString.hpp"
 #include "infra/util/EnumCast.hpp"
-#include "infra/util/Function.hpp"
 
 namespace fsal
 {
-    class Object
+    class Item
     {
     public:
         enum class Attributes : uint8_t
@@ -19,21 +18,26 @@ namespace fsal
             archive = 0x20u
         };
 
-        virtual ~Object() = default;
-
-        virtual void Exists(const infra::Function<void(bool)>& onDone) = 0;
-        virtual void Create(infra::BoundedConstString name, const infra::Function<void()>& onDone) = 0;
-        virtual void Remove(infra::BoundedConstString name, const infra::Function<void()>& onDone) = 0;
-        virtual void Rename(infra::BoundedConstString oldName, infra::BoundedConstString newName, const infra::Function<void()>& onDone) = 0;
-        virtual void ChangeAttributes(infra::BoundedConstString name, Attributes attributes, const infra::Function<void()>& onDone) = 0;
-        virtual void ChangeDirectory(infra::BoundedConstString newDirectory, const infra::Function<void()>& onDone) = 0;
-        virtual void GetWorkingDirectory(const infra::Function<void(const infra::BoundedConstString&)>& onDone) = 0;
+        virtual ~Item() = default;
+        virtual infra::BoundedConstString& Name() = 0;
     };
 
-
-    inline Object::Attributes operator|(Object::Attributes lhs, Object::Attributes rhs)
+    class Manager
     {
-        return static_cast<Object::Attributes>(infra::enum_cast(lhs) | infra::enum_cast(rhs));
+    public:
+        virtual ~Manager() = default;
+
+        virtual bool DoesExist(Item& item) = 0;
+        virtual bool IsFile(Item& item) = 0;
+        virtual bool IsDirectory(Item& item) = 0;
+        virtual void Remove(Item& item) = 0;
+        virtual void Rename(Item& item, infra::BoundedConstString newName) = 0;
+        virtual void ChangeAttributes(Item& item, Item::Attributes attributes) = 0;
+    };
+
+    inline Item::Attributes operator|(Item::Attributes lhs, Item::Attributes rhs)
+    {
+        return static_cast<Item::Attributes>(infra::enum_cast(lhs) | infra::enum_cast(rhs));
     }
 }
 
