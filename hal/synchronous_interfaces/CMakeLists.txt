@@ -10,7 +10,6 @@ target_link_libraries(hal.synchronous_interfaces PUBLIC
 )
 
 target_sources(hal.synchronous_interfaces PRIVATE
-    SynchronousDisk.hpp
     SynchronousEncryptor.hpp
     SynchronousFlash.cpp
     SynchronousFlash.hpp
@@ -19,6 +18,7 @@ target_sources(hal.synchronous_interfaces PRIVATE
     SynchronousFlashId.hpp
     SynchronousGpio.hpp
     SynchronousI2c.hpp
+    SynchronousMultiMediaCard.hpp
     SynchronousQuadSpi.hpp
     SynchronousRandomDataGenerator.hpp
     SynchronousSerialCommunication.hpp
