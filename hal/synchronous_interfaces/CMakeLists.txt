@@ -18,6 +18,7 @@ target_sources(hal.synchronous_interfaces PRIVATE
     SynchronousFlashId.hpp
     SynchronousGpio.hpp
     SynchronousI2c.hpp
+    SynchronousMultiMediaCard.hpp
     SynchronousQuadSpi.hpp
     SynchronousRandomDataGenerator.hpp
     SynchronousSerialCommunication.hpp
