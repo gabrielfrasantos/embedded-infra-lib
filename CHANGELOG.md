@@ -7,6 +7,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [6.1.0](https://github.com/gabrielfrasantos/embedded-infra-lib/compare/v6.0.0...v6.1.0) (2024-01-21)
+
+
+### Features
+
+* Add synchronous disk interface ([#81](https://github.com/gabrielfrasantos/embedded-infra-lib/issues/81)) ([aa4b064](https://github.com/gabrielfrasantos/embedded-infra-lib/commit/aa4b064375e1052d7e67d416b6b77414078bc922))
+
+
+### Bug Fixes
+
+* Static analisys action fixed ([0227611](https://github.com/gabrielfrasantos/embedded-infra-lib/commit/022761160437e74df35d94e300995de3f5ca0ec3))
+* Static analisys action fixed ([fad3780](https://github.com/gabrielfrasantos/embedded-infra-lib/commit/fad37805ccde1a79e519ced6e827cc4f5fefa8b3))
+
 ## [6.0.0](https://github.com/gabrielfrasantos/embedded-infra-lib/compare/v5.0.1...v6.0.0) (2023-12-26)
 
 
