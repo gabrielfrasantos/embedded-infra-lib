@@ -24,6 +24,8 @@ target_sources(hal.interfaces PRIVATE
     Ethernet.hpp
     Flash.cpp
     Flash.hpp
+    FlashHeterogeneous.cpp
+    FlashHeterogeneous.hpp
     FlashHomogeneous.cpp
     FlashHomogeneous.hpp
     FlashId.hpp
