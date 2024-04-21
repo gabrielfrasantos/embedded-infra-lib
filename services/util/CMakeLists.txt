@@ -7,6 +7,7 @@ target_link_libraries(services.util PUBLIC
     infra.syntax
     infra.timer
     protobuf.echo
+    services.tracer
 )
 
 target_sources(services.util PRIVATE
@@ -58,6 +59,8 @@ target_sources(services.util PRIVATE
     MessageCommunicationWindowed.hpp
     RepeatingButton.cpp
     RepeatingButton.hpp
+    SerialCommunicationLoopback.cpp
+    SerialCommunicationLoopback.hpp
     Sha256.hpp
     SignalLed.cpp
     SignalLed.hpp

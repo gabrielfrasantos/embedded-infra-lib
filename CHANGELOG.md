@@ -7,6 +7,77 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [6.0.0](https://github.com/philips-software/amp-embedded-infra-lib/compare/v5.0.1...v6.0.0) (2024-01-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor adc to support multiple samples ([#530](https://github.com/philips-software/amp-embedded-infra-lib/issues/530))
+
+### Features
+
+* Add ExecuteUntil to event dispatchers, add EventDispatcherThreadAware ([#526](https://github.com/philips-software/amp-embedded-infra-lib/issues/526)) ([d05d1f3](https://github.com/philips-software/amp-embedded-infra-lib/commit/d05d1f3fb8272ebe48407cfa42cfe9c938683106))
+* Add targets in order upgrade pack ([#488](https://github.com/philips-software/amp-embedded-infra-lib/issues/488)) ([e528794](https://github.com/philips-software/amp-embedded-infra-lib/commit/e528794ef639b5884ade70aa79f6048c3a8ccf58))
+* Added generic gatt dis characteristic uuid ([#457](https://github.com/philips-software/amp-embedded-infra-lib/issues/457)) ([be6fdde](https://github.com/philips-software/amp-embedded-infra-lib/commit/be6fddea702f47ef816fe4fc976cdd609c1fbe87))
+* Added hal/generic/UartGeneric and hal/generic/SynchronousUartGeneric ([#535](https://github.com/philips-software/amp-embedded-infra-lib/issues/535)) ([799e0ee](https://github.com/philips-software/amp-embedded-infra-lib/commit/799e0eeae498521471a48724fee54564ecb295d5))
+* Changed EMIL_ENABLE_GLOBAL_TRACING define to EMIL_ENABLE_TRACING and EMIL_DISABLE_TRACING ([#521](https://github.com/philips-software/amp-embedded-infra-lib/issues/521)) ([2d4eb48](https://github.com/philips-software/amp-embedded-infra-lib/commit/2d4eb489817fc36b35ff758bf4d9acbc3e7ceda5))
+* Forward tags to scenario request handler ([#483](https://github.com/philips-software/amp-embedded-infra-lib/issues/483)) ([a66f711](https://github.com/philips-software/amp-embedded-infra-lib/commit/a66f711cd582fa099fe92db0d4995d2f052aba19))
+* Made EventDispatcher and EventDispatcherWithWeakptr exception safe when executing an action ([#525](https://github.com/philips-software/amp-embedded-infra-lib/issues/525)) ([46a118c](https://github.com/philips-software/amp-embedded-infra-lib/commit/46a118c9d792981f282abcf8bb980bc754aa152b))
+* Optional tracing ([#489](https://github.com/philips-software/amp-embedded-infra-lib/issues/489)) ([0c594d9](https://github.com/philips-software/amp-embedded-infra-lib/commit/0c594d954fa1e5d9458d0dbbbd8f186da735793a))
+* Refactor adc to support multiple samples ([#530](https://github.com/philips-software/amp-embedded-infra-lib/issues/530)) ([419f636](https://github.com/philips-software/amp-embedded-infra-lib/commit/419f636bd76f2c0ee2f7524ca548e724bf479e27))
+
+
+### Bug Fixes
+
+* Handle echo message split over multiple streams ([#481](https://github.com/philips-software/amp-embedded-infra-lib/issues/481)) ([37d7878](https://github.com/philips-software/amp-embedded-infra-lib/commit/37d7878f709090e9d556e9b84c7bf6eeafa1c6e0))
+* HttpClientBasic reporting error for reestablished connections ([#473](https://github.com/philips-software/amp-embedded-infra-lib/issues/473)) ([0619299](https://github.com/philips-software/amp-embedded-infra-lib/commit/0619299fb6330cd7cee92ac952fad229317f64f3))
+* Incorrect handling of float numbers in json ([#478](https://github.com/philips-software/amp-embedded-infra-lib/issues/478)) ([c8ee456](https://github.com/philips-software/amp-embedded-infra-lib/commit/c8ee456e6936a76a1e7cc3ab18198b7def9d2834))
+* Infra/util/Endian: fix comparison against C++ version ([#486](https://github.com/philips-software/amp-embedded-infra-lib/issues/486)) ([4fe74e5](https://github.com/philips-software/amp-embedded-infra-lib/commit/4fe74e5751c90eca2786d263cbf6bca1520a4aba))
+* Null json value ([#470](https://github.com/philips-software/amp-embedded-infra-lib/issues/470)) ([e72d48f](https://github.com/philips-software/amp-embedded-infra-lib/commit/e72d48fd105cd8b9fd2cfe5d780a91e4591f89bd))
+* Remove \r from end of line of certificates ([#510](https://github.com/philips-software/amp-embedded-infra-lib/issues/510)) ([7f581d8](https://github.com/philips-software/amp-embedded-infra-lib/commit/7f581d87f7eab9d0b4635c25886d9b100cac22a3))
+* Remove virtual destructors reducing binary size ([#502](https://github.com/philips-software/amp-embedded-infra-lib/issues/502)) ([fc69a3c](https://github.com/philips-software/amp-embedded-infra-lib/commit/fc69a3c85b2a89018d4c9503378737a967912b31))
+* ServiceForwarder with LimitedStreamReader ends up in infinite loop ([#524](https://github.com/philips-software/amp-embedded-infra-lib/issues/524)) ([9e7f949](https://github.com/philips-software/amp-embedded-infra-lib/commit/9e7f949e96493a2dd4240995b535b3c23d455e51))
+
+## [5.0.1](https://github.com/philips-software/amp-embedded-infra-lib/compare/v5.0.0...v5.0.1) (2023-11-15)
+
+
+### Bug Fixes
+
+* Corrected incorrect destructor syntax ([#460](https://github.com/philips-software/amp-embedded-infra-lib/issues/460)) ([e01dd98](https://github.com/philips-software/amp-embedded-infra-lib/commit/e01dd985d0d4699dc859d3e8fc375c72dccf8a89))
+* Various fixes for echo  ([#462](https://github.com/philips-software/amp-embedded-infra-lib/issues/462)) ([0062598](https://github.com/philips-software/amp-embedded-infra-lib/commit/006259893b8bd57b7c0796977cd96fc4bfbcc626))
+
+## [5.0.0](https://github.com/philips-software/amp-embedded-infra-lib/compare/v4.0.0...v5.0.0) (2023-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* generic pairing/bonding classes updated ([#330](https://github.com/philips-software/amp-embedded-infra-lib/issues/330))
+* ble interface improvements ([#300](https://github.com/philips-software/amp-embedded-infra-lib/issues/300))
+
+### Features
+
+* Add protobuf/echo/ProtoMessageBuilder ([#416](https://github.com/philips-software/amp-embedded-infra-lib/issues/416)) ([f5260dd](https://github.com/philips-software/amp-embedded-infra-lib/commit/f5260dd65ae4adfea14755dfef04a18074441951))
+* Add ServiceProxyResponseQueue ([#338](https://github.com/philips-software/amp-embedded-infra-lib/issues/338)) ([88cb197](https://github.com/philips-software/amp-embedded-infra-lib/commit/88cb197acb2f38d3b6fad00f88983cf15d49c864))
+* Add streaming of little endian mac addresses ([#336](https://github.com/philips-software/amp-embedded-infra-lib/issues/336)) ([e3d7fd8](https://github.com/philips-software/amp-embedded-infra-lib/commit/e3d7fd8f12ad934b98a86a6b27d8f574049f12b3))
+* Added SerialCommunicationLoopback ([#440](https://github.com/philips-software/amp-embedded-infra-lib/issues/440)) ([2c87dfb](https://github.com/philips-software/amp-embedded-infra-lib/commit/2c87dfb5ecd1e76669af69a97f80c29bfab773b9))
+* Ble interface improvements ([#300](https://github.com/philips-software/amp-embedded-infra-lib/issues/300)) ([88a4689](https://github.com/philips-software/amp-embedded-infra-lib/commit/88a4689e8f08e2afe856170aa5b5036f69d1610c))
+* Generic pairing/bonding classes updated ([#330](https://github.com/philips-software/amp-embedded-infra-lib/issues/330)) ([dbda405](https://github.com/philips-software/amp-embedded-infra-lib/commit/dbda405cc2ef2d356fbe707df5389042a49c7959))
+* Removed Dac.hpp ([#439](https://github.com/philips-software/amp-embedded-infra-lib/issues/439)) ([4b52156](https://github.com/philips-software/amp-embedded-infra-lib/commit/4b5215609b9ee2a6ca72d8d660b8c797aa3e31c9))
+* Support payloads bigger than the MaxSendStreamSize ([#331](https://github.com/philips-software/amp-embedded-infra-lib/issues/331)) ([c411f66](https://github.com/philips-software/amp-embedded-infra-lib/commit/c411f66f7ae972786a7fa1134989ab8e4f0631aa))
+* Support streaming echo messages ([#435](https://github.com/philips-software/amp-embedded-infra-lib/issues/435)) ([07756bb](https://github.com/philips-software/amp-embedded-infra-lib/commit/07756bb41f068adbf3a2eb76adb2778fff5491f0))
+
+
+### Bug Fixes
+
+* Add acd sources to lwip ([#400](https://github.com/philips-software/amp-embedded-infra-lib/issues/400)) ([a4f68ef](https://github.com/philips-software/amp-embedded-infra-lib/commit/a4f68efdf19e7b556cb6fe2cba0165908f56be8c))
+* Added workaround mbedtls and clang-cl incomatibility ([#441](https://github.com/philips-software/amp-embedded-infra-lib/issues/441)) ([063b595](https://github.com/philips-software/amp-embedded-infra-lib/commit/063b59508f1d09c2675b338c7b54d64934f7792c))
+* Cpp:S6232 well-defined type-punning method should be used instead of a union-based one ([d809c17](https://github.com/philips-software/amp-embedded-infra-lib/commit/d809c173cacefd3bf2d661718111d5d301a95fc1))
+* Destruction of HttpClientJson while resetting the reader resulted in memory corruption ([#404](https://github.com/philips-software/amp-embedded-infra-lib/issues/404)) ([ed8a8a0](https://github.com/philips-software/amp-embedded-infra-lib/commit/ed8a8a0e5893074fc56fde94cfdb003a870e930c))
+* Detaching HttpClient while in HeaderAvailable resulted in a crash ([#406](https://github.com/philips-software/amp-embedded-infra-lib/issues/406)) ([a905a30](https://github.com/philips-software/amp-embedded-infra-lib/commit/a905a306be194c7cf6380e70cf83b668c8d27425))
+* Enable service scoping of method invocations in services.echo_console ([#325](https://github.com/philips-software/amp-embedded-infra-lib/issues/325)) ([7090a40](https://github.com/philips-software/amp-embedded-infra-lib/commit/7090a407f50d89073c468381e5207f1c0f56b6c1))
+* UpgradePackBuilderFacade setting mbedtls global memory pool on stack ([#324](https://github.com/philips-software/amp-embedded-infra-lib/issues/324)) ([ec567d5](https://github.com/philips-software/amp-embedded-infra-lib/commit/ec567d511f40eb3c0962ac4b6ac3479f64c0a871))
+* UpgradePackBuilderFacade setting mbedtls global memory pool on stack, causing a crash when combined with ConnectionMbedTls ([ec567d5](https://github.com/philips-software/amp-embedded-infra-lib/commit/ec567d511f40eb3c0962ac4b6ac3479f64c0a871))
+
 ## [4.0.0](https://github.com/philips-software/amp-embedded-infra-lib/compare/v3.2.0...v4.0.0) (2023-06-02)
 
 

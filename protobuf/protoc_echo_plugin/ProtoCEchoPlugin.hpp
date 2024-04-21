@@ -3,7 +3,7 @@
 
 #include "google/protobuf/compiler/code_generator.h"
 #include "google/protobuf/io/printer.h"
-#include "protobuf/protoc_echo_plugin/CppFormatter.hpp"
+#include "infra/syntax/CppFormatter.hpp"
 #include "protobuf/protoc_echo_plugin/EchoObjects.hpp"
 #include <memory>
 
@@ -60,6 +60,7 @@ namespace application
     protected:
         virtual void AddTypeMapProtoType(const EchoField& field, Entities& entities) const;
         virtual void AddTypeMapType(const EchoField& field, Entities& entities) const;
+        virtual void AddTypeMapDecayedType(const EchoField& field, Entities& entities) const;
         void AddTypeMapFieldNumber(const EchoField& field, Entities& entities) const;
         std::string MessageName() const;
         virtual std::string MessageSuffix() const;
@@ -78,6 +79,7 @@ namespace application
     protected:
         void AddTypeMapProtoType(const EchoField& field, Entities& entities) const override;
         void AddTypeMapType(const EchoField& field, Entities& entities) const override;
+        void AddTypeMapDecayedType(const EchoField& field, Entities& entities) const override;
         std::string MessageSuffix() const override;
     };
 
@@ -157,10 +159,13 @@ namespace application
         void GenerateServiceFunctions();
         void GenerateServiceProxyFunctions();
         void GenerateFieldConstants();
+        void GenerateMethodTypeList();
 
         uint32_t MaxMessageSize() const;
         std::string AcceptsServiceBody() const;
-        std::string HandleBody() const;
+        std::string StartMethodBody() const;
+        void PrintMethodCaseWithParameter(const EchoMethod& method, google::protobuf::io::Printer& printer) const;
+
         std::string ProxyMethodBody(const EchoMethod& method) const;
 
     private:

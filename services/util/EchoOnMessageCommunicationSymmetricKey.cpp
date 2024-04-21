@@ -5,23 +5,17 @@ namespace services
     namespace
     {
         template<std::size_t Size>
-        std::array<uint8_t, Size> Convert(const infra::BoundedVector<uint8_t>& value)
+        std::array<uint8_t, Size> Convert(infra::ConstByteRange value)
         {
             really_assert(Size == value.size());
             std::array<uint8_t, Size> result;
-            infra::Copy(infra::MakeRange(value), infra::MakeRange(result));
+            infra::Copy(value, infra::MakeRange(result));
             return result;
-        }
-
-        template<std::size_t Size>
-        infra::BoundedVector<uint8_t>::WithMaxSize<Size> Convert(const std::array<uint8_t, Size>& value)
-        {
-            return infra::BoundedVector<uint8_t>::WithMaxSize<Size>(value.begin(), value.end());
         }
     }
 
-    EchoOnMessageCommunicationSymmetricKey::EchoOnMessageCommunicationSymmetricKey(MessageCommunicationSecured& secured, hal::SynchronousRandomDataGenerator& randomDataGenerator, EchoErrorPolicy& errorPolicy)
-        : EchoOnMessageCommunication(secured, errorPolicy)
+    EchoOnMessageCommunicationSymmetricKey::EchoOnMessageCommunicationSymmetricKey(MessageCommunicationSecured& secured, MethodSerializerFactory& serializerFactory, hal::SynchronousRandomDataGenerator& randomDataGenerator, const EchoErrorPolicy& errorPolicy)
+        : EchoOnMessageCommunication(secured, serializerFactory, errorPolicy)
         , SymmetricKeyEstablishment(static_cast<services::Echo&>(*this))
         , SymmetricKeyEstablishmentProxy(static_cast<services::Echo&>(*this))
         , secured(secured)
@@ -45,15 +39,15 @@ namespace services
             {
                 auto key = randomDataGenerator.GenerateRandomData<MessageCommunicationSecured::KeyType>();
                 auto iv = randomDataGenerator.GenerateRandomData<MessageCommunicationSecured::IvType>();
-                SymmetricKeyEstablishmentProxy::ActivateNewKeyMaterial(Convert(key), Convert(iv));
-                secured.SetSendKey(key, iv);
+                SymmetricKeyEstablishmentProxy::ActivateNewKeyMaterial(infra::MakeRange(key), infra::MakeRange(iv));
+                secured.SetNextSendKey(key, iv);
 
                 initializingSending = false;
                 ReQueueWaitingProxies();
             });
     }
 
-    void EchoOnMessageCommunicationSymmetricKey::ActivateNewKeyMaterial(const infra::BoundedVector<uint8_t>& key, const infra::BoundedVector<uint8_t>& iv)
+    void EchoOnMessageCommunicationSymmetricKey::ActivateNewKeyMaterial(infra::ConstByteRange key, infra::ConstByteRange iv)
     {
         secured.SetReceiveKey(Convert<16>(key), Convert<16>(iv));
         MethodDone();

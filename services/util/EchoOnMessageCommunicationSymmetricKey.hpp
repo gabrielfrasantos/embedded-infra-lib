@@ -14,7 +14,7 @@ namespace services
         , private message_communication_security::SymmetricKeyEstablishmentProxy
     {
     public:
-        EchoOnMessageCommunicationSymmetricKey(MessageCommunicationSecured& secured, hal::SynchronousRandomDataGenerator& randomDataGenerator, EchoErrorPolicy& errorPolicy = echoErrorPolicyAbortOnMessageFormatError);
+        EchoOnMessageCommunicationSymmetricKey(MessageCommunicationSecured& secured, MethodSerializerFactory& serializerFactory, hal::SynchronousRandomDataGenerator& randomDataGenerator, const EchoErrorPolicy& errorPolicy = echoErrorPolicyAbortOnMessageFormatError);
 
         // Implementation of Echo
         void RequestSend(ServiceProxy& serviceProxy) override;
@@ -24,7 +24,7 @@ namespace services
 
     private:
         // Implementation of SymmetricKeyEstablishment
-        void ActivateNewKeyMaterial(const infra::BoundedVector<uint8_t>& key, const infra::BoundedVector<uint8_t>& iv) override;
+        void ActivateNewKeyMaterial(infra::ConstByteRange key, infra::ConstByteRange iv) override;
 
         void ReQueueWaitingProxies();
 

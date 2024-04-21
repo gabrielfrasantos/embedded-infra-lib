@@ -21,11 +21,16 @@ namespace infra
         StreamWriter() = default;
         StreamWriter(const StreamWriter&) = delete;
         StreamWriter& operator=(const StreamWriter&) = delete;
-        virtual ~StreamWriter() = default;
+        ~StreamWriter() = default;
 
     public:
         virtual void Insert(ConstByteRange range, StreamErrorPolicy& errorPolicy) = 0;
         virtual std::size_t Available() const = 0;
+
+        bool Empty() const
+        {
+            return Available() == 0;
+        }
 
         virtual std::size_t ConstructSaveMarker() const;
         virtual std::size_t GetProcessedBytesSince(std::size_t marker) const;

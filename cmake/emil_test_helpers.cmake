@@ -6,7 +6,7 @@ function(emil_fetch_googletest)
     FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest
-        GIT_TAG        release-1.12.1
+        GIT_TAG        v1.14.0
     )
 
     set(gtest_force_shared_crt On CACHE BOOL "" FORCE) # For Windows: Prevent overriding the parent project's compiler/linker settings
@@ -39,8 +39,7 @@ function(emil_enable_testing)
     if (EMIL_ENABLE_MUTATION_TESTING)
         if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
             add_compile_options(
-                -g -O0 -grecord-command-line -fprofile-instr-generate -fcoverage-mapping
-                -fexperimental-new-pass-manager -fpass-plugin=/usr/lib/mull-ir-frontend
+                -g -O0 -grecord-command-line -fprofile-instr-generate -fcoverage-mapping -fpass-plugin=/usr/lib/mull-ir-frontend
             )
 
             add_link_options(-fprofile-instr-generate)

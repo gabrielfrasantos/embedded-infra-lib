@@ -1,10 +1,12 @@
 #include "services/network/TracingEchoOnConnection.hpp"
-#include "infra/stream/ByteInputStream.hpp"
+#include "infra/stream/BoundedVectorInputStream.hpp"
+#include "protobuf/echo/Echo.hpp"
+#include <cstddef>
 
 namespace services
 {
-    TracingEchoOnConnection::TracingEchoOnConnection(services::Tracer& tracer, EchoErrorPolicy& errorPolicy)
-        : EchoOnConnection(errorPolicy)
+    TracingEchoOnConnection::TracingEchoOnConnection(services::Tracer& tracer, services::MethodSerializerFactory& serializerFactory, const EchoErrorPolicy& errorPolicy)
+        : EchoOnConnection(serializerFactory, errorPolicy)
         , tracer(tracer)
     {}
 
@@ -18,49 +20,90 @@ namespace services
         services.erase_slow(service);
     }
 
-    void TracingEchoOnConnection::ExecuteMethod(uint32_t serviceId, uint32_t methodId, infra::ProtoLengthDelimited& contents, infra::StreamReaderWithRewinding& reader)
+    infra::SharedPtr<MethodSerializer> TracingEchoOnConnection::GrantSend(ServiceProxy& proxy)
     {
-        auto service = FindService(serviceId);
+        writerBuffer.clear();
+        serializer = EchoOnConnection::GrantSend(proxy);
+        return infra::MakeContainedSharedObject(static_cast<MethodSerializer&>(*this), serializer);
+    }
 
-        if (service != nullptr)
+    infra::SharedPtr<MethodDeserializer> TracingEchoOnConnection::StartingMethod(uint32_t serviceId, uint32_t methodId, uint32_t size, infra::SharedPtr<MethodDeserializer>&& deserializer)
+    {
+        receivingService = FindService(serviceId);
+
+        if (receivingService != nullptr)
         {
-            auto marker = reader.ConstructSaveMarker();
+            receivingMethodId = methodId;
 
-            infra::DataInputStream::WithErrorPolicy stream(reader, infra::noFail);
-            infra::ProtoLengthDelimited contentsCopy(stream, stream.ErrorPolicy(), contents.Available());
-
-            tracer.Trace() << "< ";
-            service->TraceMethod(methodId, contentsCopy, tracer);
-
-            reader.Rewind(marker);
+            readerBuffer.clear();
+            this->deserializer = std::move(deserializer);
+            return infra::MakeContainedSharedObject(static_cast<MethodDeserializer&>(*this), this->deserializer);
         }
         else
+        {
             tracer.Trace() << "< Unknown service " << serviceId << " method " << methodId;
-
-        EchoOnConnection::ExecuteMethod(serviceId, methodId, contents, reader);
+            return deserializer;
+        }
     }
 
-    void TracingEchoOnConnection::SetStreamWriter(infra::SharedPtr<infra::StreamWriter>&& writer)
+    void TracingEchoOnConnection::ReleaseDeserializer()
     {
-        EchoOnConnection::SetStreamWriter(tracingWriter.Emplace(std::move(writer), *this));
+        EchoOnStreams::ReleaseDeserializer();
+        deserializer = nullptr;
     }
 
-    void TracingEchoOnConnection::SendingData(infra::ConstByteRange range) const
+    bool TracingEchoOnConnection::Serialize(infra::SharedPtr<infra::StreamWriter>&& writer)
     {
-        infra::ByteInputStream stream(range, infra::noFail);
+        return serializer->Serialize(tracingWriter.Emplace(std::move(writer), *this));
+    }
+
+    void TracingEchoOnConnection::SerializationDone()
+    {
+        infra::BoundedVectorInputStream stream(writerBuffer, infra::noFail);
         infra::StreamErrorPolicy formatErrorPolicy(infra::softFail);
         infra::ProtoParser parser(stream, formatErrorPolicy);
         auto serviceId = static_cast<uint32_t>(parser.GetVarInt());
         auto message = parser.GetField();
-        if (stream.Failed() || formatErrorPolicy.Failed() || !message.first.Is<infra::ProtoLengthDelimited>())
-        {
+        if (stream.Failed())
+            tracer.Trace() << "> message too big";
+        else if (formatErrorPolicy.Failed() || !message.first.Is<infra::ProtoLengthDelimited>())
             tracer.Trace() << "> Malformed message";
-            return;
+        else
+        {
+            SendingMethod(serviceId, message.second, message.first.Get<infra::ProtoLengthDelimited>());
+            if (stream.Failed() || formatErrorPolicy.Failed())
+                tracer.Continue() << "... Malformed message";
         }
+        serializer = nullptr;
+    }
 
-        SendingMethod(serviceId, message.second, message.first.Get<infra::ProtoLengthDelimited>());
-        if (stream.Failed() || formatErrorPolicy.Failed())
-            tracer.Continue() << "... Malformed message";
+    void TracingEchoOnConnection::MethodContents(infra::SharedPtr<infra::StreamReaderWithRewinding>&& reader)
+    {
+        auto start = reader->ConstructSaveMarker();
+        while (!reader->Empty() && !readerBuffer.full())
+        {
+            auto range = reader->ExtractContiguousRange(readerBuffer.max_size() - readerBuffer.size());
+            readerBuffer.insert(readerBuffer.end(), range.begin(), range.end());
+        }
+        reader->Rewind(start);
+
+        deserializer->MethodContents(std::move(reader));
+    }
+
+    void TracingEchoOnConnection::ExecuteMethod()
+    {
+        infra::BoundedVectorInputStream stream(readerBuffer, infra::noFail);
+        infra::ProtoLengthDelimited contentsCopy(stream, stream.ErrorPolicy(), static_cast<uint32_t>(stream.Available()));
+
+        tracer.Trace() << "< ";
+        receivingService->TraceMethod(receivingMethodId, contentsCopy, tracer);
+
+        deserializer->ExecuteMethod();
+    }
+
+    bool TracingEchoOnConnection::Failed() const
+    {
+        return deserializer->Failed();
     }
 
     void TracingEchoOnConnection::SendingMethod(uint32_t serviceId, uint32_t methodId, infra::ProtoLengthDelimited& contents) const
@@ -86,18 +129,14 @@ namespace services
     }
 
     TracingEchoOnConnection::TracingWriter::TracingWriter(infra::SharedPtr<infra::StreamWriter>&& delegate, TracingEchoOnConnection& echo)
-        : echo(echo)
-        , delegate(std::move(delegate))
+        : delegate(std::move(delegate))
+        , writer(echo.writerBuffer)
     {}
-
-    TracingEchoOnConnection::TracingWriter::~TracingWriter()
-    {
-        echo.SendingData(infra::MakeRange(writer.Storage()));
-    }
 
     void TracingEchoOnConnection::TracingWriter::Insert(infra::ConstByteRange range, infra::StreamErrorPolicy& errorPolicy)
     {
-        writer.Insert(range, errorPolicy);
+        infra::StreamErrorPolicy tracingErrorPolicy(infra::noFail);
+        writer.Insert(range, tracingErrorPolicy);
         delegate->Insert(range, errorPolicy);
     }
 
